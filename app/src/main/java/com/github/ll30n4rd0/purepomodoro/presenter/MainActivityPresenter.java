@@ -135,7 +135,6 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
 
         private long timeLeftMillis;
         private final long durationSeconds;
-        private long endTime;
         private boolean timerRunning;
         private CountDownTimer countDownTimer;
 
@@ -171,7 +170,7 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
         }
 
         private void start() {
-            endTime = System.currentTimeMillis() + timeLeftMillis;
+            initCountDownTimer();
             countDownTimer = countDownTimer.start();
             timerRunning = true;
         }
