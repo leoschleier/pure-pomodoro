@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.github.ll30n4rd0.purepomodoro.interfaces.BaseMVP;
 import com.github.ll30n4rd0.purepomodoro.interfaces.MainActivityContract;
+import com.github.ll30n4rd0.purepomodoro.model.Pomodoro;
 
 import java.util.HashMap;
 
@@ -17,8 +18,11 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
 
     private Timer timer;
 
+    public MainActivityPresenter() {
+        this.model = new Pomodoro();
+    }
     public MainActivityPresenter(MainActivityContract.IModel model) {
-        this.model = model;
+        this.model = new Pomodoro();
     }
 
     @Override
@@ -29,7 +33,7 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
     @Override
     public void subscribe(@NonNull MainActivityContract.IView view, @Nullable MainActivityContract.IState state) {
         this.view = view;
-        if(state != null){
+        if (state != null) {
             HashMap<String, Object> stateItems = state.getStateItems();
             long durationSeconds = (long) stateItems.get("durationSeconds");
             long timeLeftMillis = (long) stateItems.get("timeLeftMillis");
@@ -37,18 +41,19 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
             long endTimeMillis = (long) stateItems.get("endTimeMillis");
 
             timer = new Timer(durationSeconds, timeLeftMillis, timerRunning);
-            if(timerRunning){
+
+            if (timerRunning) {
                 timeLeftMillis = endTimeMillis - System.currentTimeMillis();
-                timer = new Timer(durationSeconds, timeLeftMillis, timerRunning);
+                timer = new Timer(durationSeconds, timeLeftMillis, true);
                 startButtonClicked();
-            }else if(durationSeconds!=timeLeftMillis){
+            } else if (durationSeconds != timeLeftMillis) {
                 pauseButtonClicked();
-            }else{
+            } else {
                 stopButtonClicked();
             }
-        }else{
+        } else {
             //Todo: Load Pomodoro
-            timer = new Timer(10);
+            timer = new Timer(model.getWorkDurationSeconds());
         }
     }
 
@@ -56,7 +61,6 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
     public void unsubscribe() {
         view = null;
     }
-
 
 
     @NonNull
@@ -95,12 +99,12 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
         //view.setTimerSkippedButtonInterface();
     }
 
-    private void timerFinished(){
+    private void timerFinished() {
         view.setTimerStoppedButtonInterface();
     }
 
 
-    private void updateTimer(long timeMillis){
+    private void updateTimer(long timeMillis) {
         int hours = (int) timeMillis / 1000 / 3600;
         int minutes = (int) timeMillis / 1000 % 3600 / 60;
         int seconds = (int) timeMillis / 1000 % 60;
@@ -110,7 +114,7 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
         view.setTimerText(timerTextFormatted);
     }
 
-    private String formatTimerText(int hours, int minutes, int seconds){
+    private String formatTimerText(int hours, int minutes, int seconds) {
         String timerTextFormatted;
         if (hours > 0) {
             timerTextFormatted = String.format("%d:%02d:%02d", hours, minutes, seconds);
@@ -119,14 +123,15 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
         }
         return timerTextFormatted;
     }
+
     @Override
-    public void onMainActivityStop(){
+    public void onMainActivityStop() {
         if (timer.countDownTimer != null) {
             timer.countDownTimer.cancel();
         }
     }
 
-    private class Timer{
+    private class Timer {
 
         private long timeLeftMillis;
         private final long durationSeconds;
@@ -134,20 +139,21 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
         private boolean timerRunning;
         private CountDownTimer countDownTimer;
 
-        private Timer(long durationSeconds){
+        private Timer(long durationSeconds) {
             this.durationSeconds = durationSeconds;
-            timeLeftMillis = durationSeconds*1000;
+            timeLeftMillis = durationSeconds * 1000;
             timerRunning = false;
+            initCountDownTimer();
         }
 
-        private Timer(long durationSeconds, long timLeftMillis, boolean timerRunning){
+        private Timer(long durationSeconds, long timLeftMillis, boolean timerRunning) {
             this.durationSeconds = durationSeconds;
             this.timeLeftMillis = timLeftMillis;
             this.timerRunning = timerRunning;
+            initCountDownTimer();
         }
 
-        private void start() {
-            endTime = System.currentTimeMillis() + timeLeftMillis;
+        private void initCountDownTimer(){
             countDownTimer = new CountDownTimer(timeLeftMillis, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
@@ -161,7 +167,12 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
                     timerFinished();
                     resetTimer();
                 }
-            }.start();
+            };
+        }
+
+        private void start() {
+            endTime = System.currentTimeMillis() + timeLeftMillis;
+            countDownTimer = countDownTimer.start();
             timerRunning = true;
         }
 
@@ -171,7 +182,7 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
             resetTimer();
         }
 
-        private void pause(){
+        private void pause() {
             countDownTimer.cancel();
             timerRunning = false;
         }
@@ -181,7 +192,7 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
         }
 
         private void setTimer(long durationSeconds) {
-            timeLeftMillis = durationSeconds*1000;
+            timeLeftMillis = durationSeconds * 1000;
             updateTimer(timeLeftMillis);
         }
     }

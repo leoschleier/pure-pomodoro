@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         pauseButton = findViewById(R.id.pause_button);
         skipButton = findViewById(R.id.skip_button);
 
-        presenter.subscribe(this);
+        presenter = new MainActivityPresenter();
+        //presenter.subscribe(this);
 
         /*setButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -87,15 +88,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
         pauseButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                presenter.pauseButtonClicked();
-            }
+            public void onClick(View v) { presenter.pauseButtonClicked(); }
         });
 
         skipButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-            }
+            public void onClick(View v) { presenter.skipButtonClicked(); }
         });
     }
 
@@ -104,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         super.onStart();
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         MainActivityState state = StateRepositoryHelper.restoreOnStart(prefs);
-        presenter.subscribe(this, state);
+        //presenter.subscribe(this, state);
     }
 
     @Override
@@ -133,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     }
 
     @Override
-    public void setTimerRunningButtonInterface(){
+    public void setTimerRunningButtonInterface() {
         startButton.setVisibility(View.INVISIBLE);
         pauseButton.setVisibility(View.VISIBLE);
         skipButton.setVisibility(View.VISIBLE);
@@ -141,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     }
 
     @Override
-    public void setTimerPausedButtonInterface(){
+    public void setTimerPausedButtonInterface() {
         startButton.setVisibility(View.VISIBLE);
         pauseButton.setVisibility(View.INVISIBLE);
         skipButton.setVisibility(View.VISIBLE);
@@ -149,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     }
 
     @Override
-    public void setTimerStoppedButtonInterface(){
+    public void setTimerStoppedButtonInterface() {
         startButton.setVisibility(View.VISIBLE);
         pauseButton.setVisibility(View.INVISIBLE);
         skipButton.setVisibility(View.INVISIBLE);
@@ -157,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     }
 
     @Override
-    public void setTimerSkippedButtonInterface(){
+    public void setTimerSkippedButtonInterface() {
         setTimerRunningButtonInterface();
     }
 
@@ -177,6 +175,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     }
 
     @Override
+    protected void onPause(){
+        super.onPause();
+
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
@@ -193,9 +197,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         super.onDestroy();
     }
 
-    private static class StateRepositoryHelper{
+    private static class StateRepositoryHelper {
 
-        private static void saveInstanceState(@NonNull Bundle outState, MainActivityContract.IState state){
+        private static void saveInstanceState(@NonNull Bundle outState, MainActivityContract.IState state) {
             HashMap<String, Object> stateItems = state.getStateItems();
             long durationSeconds = (long) stateItems.get("durationSeconds");
             long timeLeftMillis = (long) stateItems.get("timeLeftMillis");
@@ -208,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
             outState.putLong("durationSeconds", durationSeconds);
         }
 
-        private static MainActivityState restoreInstanceState(@NonNull Bundle savedInstanceState){
+        private static MainActivityState restoreInstanceState(@NonNull Bundle savedInstanceState) {
             long durationSeconds = savedInstanceState.getLong("durationSeconds");
             boolean timerRunning = savedInstanceState.getBoolean("timerRunning");
             long endTimeMillis = savedInstanceState.getLong("endTimeMillis");
@@ -223,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
             return new MainActivityState(stateItems);
         }
 
-        private static void saveOnStop(@NonNull SharedPreferences.Editor editor, MainActivityContract.IState state){
+        private static void saveOnStop(@NonNull SharedPreferences.Editor editor, MainActivityContract.IState state) {
             HashMap<String, Object> stateItems = state.getStateItems();
             long durationSeconds = (long) stateItems.get("durationSeconds");
             long timeLeftMillis = (long) stateItems.get("timeLeftMillis");
@@ -237,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
             editor.apply();
         }
 
-        private static MainActivityState restoreOnStart(SharedPreferences prefs){
+        private static MainActivityState restoreOnStart(SharedPreferences prefs) {
             long durationSeconds = prefs.getLong("durationSeconds", 600000);
             long timeLeftMillis = prefs.getLong("timeLeftMillis", durationSeconds);
             long endTimeMillis = prefs.getLong("endTimeMillis", 0);

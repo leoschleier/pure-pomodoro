@@ -1,12 +1,12 @@
 package com.github.ll30n4rd0.purepomodoro.interfaces;
 
-import com.github.ll30n4rd0.purepomodoro.model.PomodoroState;
+import com.github.ll30n4rd0.purepomodoro.model.Pomodoro;
 
 import java.util.HashMap;
 
 public interface MainActivityContract{
     interface IModel extends BaseMVP.IBaseModel {
-        int getIntervals();
+        int getNumIntervals();
 
         int getCurrentInterval();
 
@@ -16,17 +16,9 @@ public interface MainActivityContract{
 
         int getLongBreakDurationSeconds();
 
-        PomodoroState getCurrentPomodoroState();
+        Pomodoro.State getCurrentPomodoroState();
 
-        PomodoroState getNextPomodoroState();
-
-        int getCompletedPomodoros();
-
-        int getTotalDurationSeconds();
-
-        int getTotalWorkDurationSeconds();
-
-        int getTotalBreakDurationSeconds();
+        Pomodoro.State nextPomodoroState();
     }
 
     interface IView extends BaseMVP.IBaseView{
