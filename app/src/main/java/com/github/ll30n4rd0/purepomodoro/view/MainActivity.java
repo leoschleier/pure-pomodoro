@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         skipButton = findViewById(R.id.skip_button);
 
         presenter = new MainActivityPresenter();
-        //presenter.subscribe(this);
 
         /*setButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -98,17 +97,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        MainActivityState state = StateRepositoryHelper.restoreOnStart(prefs);
-        //presenter.subscribe(this, state);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        presenter.subscribe(this);
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        MainActivityState state = StateRepositoryHelper.restoreOnStart(prefs);
+        presenter.subscribe(this, state);
     }
 
     /*private void setTime(long milliseconds) {
@@ -159,12 +152,18 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         setTimerRunningButtonInterface();
     }
 
+    /*@Override public void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        // Pass state when subscribing; it can be null.
+        presenter.subscribe(this, savedInstanceState != null ? StateRepositoryHelper.restoreInstanceState(savedInstanceState) : null);
+    }
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         MainActivityContract.IState presenterState = presenter.getState();
         StateRepositoryHelper.saveInstanceState(outState, presenterState);
-        presenter.unsubscribe();
     }
 
     @Override
@@ -172,86 +171,90 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         super.onRestoreInstanceState(savedInstanceState);
         MainActivityState state = StateRepositoryHelper.restoreInstanceState(savedInstanceState);
         presenter.subscribe(this, state);
-    }
+    }*/
 
     @Override
     protected void onPause(){
         super.onPause();
-
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        MainActivityContract.IState presenterState = presenter.getState();
+        StateRepositoryHelper.saveOnStop(editor, presenterState);
+        presenter.unsubscribe();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        MainActivityContract.IState presenterState = presenter.getState();
-        StateRepositoryHelper.saveOnStop(editor, presenterState);
-
         presenter.onMainActivityStop();
-        presenter.unsubscribe();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     private static class StateRepositoryHelper {
+        //TODO: Simplify save and restore
 
         private static void saveInstanceState(@NonNull Bundle outState, MainActivityContract.IState state) {
-            HashMap<String, Object> stateItems = state.getStateItems();
-            long durationSeconds = (long) stateItems.get("durationSeconds");
-            long timeLeftMillis = (long) stateItems.get("timeLeftMillis");
-            long endTimeMillis = (long) stateItems.get("endTimeMillis");
-            boolean timerRunning = (boolean) stateItems.get("timerRunning");
+            HashMap<MainActivityState.StateItems, Object> stateItems = (HashMap<MainActivityState.StateItems, Object>) state.getStateItems();
+            long durationSeconds = (long) stateItems.get(MainActivityState.StateItems.DURATION_SECONDS);
+            long timeLeftMillis = (long) stateItems.get(MainActivityState.StateItems.TIME_LEFT_MLLIS);
+            long stopTimeMillis = (long) stateItems.get(MainActivityState.StateItems.STOP_TIME_MILLIS);
+            boolean timerRunning = (boolean) stateItems.get(MainActivityState.StateItems.TIMER_RUNNING);
 
-            outState.putLong("timeLeftMillis", timeLeftMillis);
-            outState.putBoolean("timerRunning", timerRunning);
-            outState.putLong("endTimeMillis", endTimeMillis);
-            outState.putLong("durationSeconds", durationSeconds);
+            outState.putLong(String.valueOf(MainActivityState.StateItems.DURATION_SECONDS), durationSeconds);
+            outState.putLong(String.valueOf(MainActivityState.StateItems.TIME_LEFT_MLLIS), timeLeftMillis);
+            outState.putLong(String.valueOf(MainActivityState.StateItems.STOP_TIME_MILLIS), stopTimeMillis);
+            outState.putBoolean(String.valueOf(MainActivityState.StateItems.TIMER_RUNNING), timerRunning);
         }
 
         private static MainActivityState restoreInstanceState(@NonNull Bundle savedInstanceState) {
-            long durationSeconds = savedInstanceState.getLong("durationSeconds");
-            boolean timerRunning = savedInstanceState.getBoolean("timerRunning");
-            long endTimeMillis = savedInstanceState.getLong("endTimeMillis");
-            long timeLeftMillis = savedInstanceState.getLong("timeLeftMillis");
+            long durationSeconds = savedInstanceState.getLong(String.valueOf(MainActivityState.StateItems.DURATION_SECONDS));
+            long timeLeftMillis = savedInstanceState.getLong(String.valueOf(MainActivityState.StateItems.TIME_LEFT_MLLIS));
+            long stopTimeMillis = savedInstanceState.getLong(String.valueOf(MainActivityState.StateItems.STOP_TIME_MILLIS));
+            boolean timerRunning = savedInstanceState.getBoolean(String.valueOf(MainActivityState.StateItems.TIMER_RUNNING));
 
-            HashMap<String, Object> stateItems = new HashMap<>();
-            stateItems.put("durationSeconds", durationSeconds);
-            stateItems.put("timerRunning", timerRunning);
-            stateItems.put("endTimeMillis", endTimeMillis);
-            stateItems.put("timeLeftMillis", timeLeftMillis);
-
-            return new MainActivityState(stateItems);
+            return createState(durationSeconds, timeLeftMillis, stopTimeMillis, timerRunning);
         }
 
         private static void saveOnStop(@NonNull SharedPreferences.Editor editor, MainActivityContract.IState state) {
-            HashMap<String, Object> stateItems = state.getStateItems();
-            long durationSeconds = (long) stateItems.get("durationSeconds");
-            long timeLeftMillis = (long) stateItems.get("timeLeftMillis");
-            long endTimeMillis = (long) stateItems.get("endTimeMillis");
-            boolean timerRunning = (boolean) stateItems.get("timerRunning");
+            HashMap<MainActivityState.StateItems, Object> stateItems = (HashMap<MainActivityState.StateItems, Object>) state.getStateItems();
+            long durationSeconds = (long) stateItems.get(MainActivityState.StateItems.DURATION_SECONDS);
+            long timeLeftMillis = (long) stateItems.get(MainActivityState.StateItems.TIME_LEFT_MLLIS);
+            long stopTimeMillis = (long) stateItems.get(MainActivityState.StateItems.STOP_TIME_MILLIS);
+            boolean timerRunning = (boolean) stateItems.get(MainActivityState.StateItems.TIMER_RUNNING);
 
-            editor.putLong("durationSeconds", durationSeconds);
-            editor.putLong("millisLeft", timeLeftMillis);
-            editor.putBoolean("timerRunning", timerRunning);
-            editor.putLong("endTimeMillis", endTimeMillis);
+            editor.putLong(String.valueOf(MainActivityState.StateItems.DURATION_SECONDS), durationSeconds);
+            editor.putLong(String.valueOf(MainActivityState.StateItems.TIME_LEFT_MLLIS), timeLeftMillis);
+            editor.putLong(String.valueOf(MainActivityState.StateItems.STOP_TIME_MILLIS), stopTimeMillis);
+            editor.putBoolean(String.valueOf(MainActivityState.StateItems.TIMER_RUNNING), timerRunning);
             editor.apply();
         }
 
         private static MainActivityState restoreOnStart(SharedPreferences prefs) {
-            long durationSeconds = prefs.getLong("durationSeconds", 600000);
-            long timeLeftMillis = prefs.getLong("timeLeftMillis", durationSeconds);
-            long endTimeMillis = prefs.getLong("endTimeMillis", 0);
-            boolean timerRunning = prefs.getBoolean("timerRunning", false);
+            MainActivityState mainActivityState = null;
 
-            HashMap<String, Object> stateItems = new HashMap<>();
-            stateItems.put("durationSeconds", durationSeconds);
-            stateItems.put("timerRunning", timerRunning);
-            stateItems.put("endTimeMillis", endTimeMillis);
-            stateItems.put("timeLeftMillis", timeLeftMillis);
+            long defDuration = 1000000;
+            long durationSeconds = prefs.getLong(String.valueOf(MainActivityState.StateItems.DURATION_SECONDS), defDuration);
+
+            if (durationSeconds!=defDuration){
+                long timeLeftMillis = prefs.getLong(String.valueOf(MainActivityState.StateItems.TIME_LEFT_MLLIS), durationSeconds);
+                long stopTimeMillis = prefs.getLong(String.valueOf(MainActivityState.StateItems.STOP_TIME_MILLIS), 0);
+                boolean timerRunning = prefs.getBoolean(String.valueOf(MainActivityState.StateItems.TIMER_RUNNING), false);
+
+                mainActivityState = createState(durationSeconds, timeLeftMillis, stopTimeMillis, timerRunning);
+            }
+
+            return mainActivityState;
+        }
+
+        private static void clearState(SharedPreferences prefs){
+            prefs.edit().clear().apply();
+        }
+
+        private static MainActivityState createState(long durationSeconds, long timeLeftMillis, long stopTimeMillis, boolean timerRunning){
+            HashMap<MainActivityState.StateItems, Object> stateItems = new HashMap<>();
+            stateItems.put(MainActivityState.StateItems.DURATION_SECONDS, durationSeconds);
+            stateItems.put(MainActivityState.StateItems.TIME_LEFT_MLLIS, timeLeftMillis);
+            stateItems.put(MainActivityState.StateItems.STOP_TIME_MILLIS, stopTimeMillis);
+            stateItems.put(MainActivityState.StateItems.TIMER_RUNNING, timerRunning);
 
             return new MainActivityState(stateItems);
         }

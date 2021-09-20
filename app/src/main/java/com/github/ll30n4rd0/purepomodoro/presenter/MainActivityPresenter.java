@@ -10,6 +10,8 @@ import com.github.ll30n4rd0.purepomodoro.model.Pomodoro;
 
 import java.util.HashMap;
 
+import static java.lang.Math.abs;
+
 public class MainActivityPresenter implements MainActivityContract.IPresenter {
 
     @Nullable
@@ -34,19 +36,20 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
     public void subscribe(@NonNull MainActivityContract.IView view, @Nullable MainActivityContract.IState state) {
         this.view = view;
         if (state != null) {
-            HashMap<String, Object> stateItems = state.getStateItems();
-            long durationSeconds = (long) stateItems.get("durationSeconds");
-            long timeLeftMillis = (long) stateItems.get("timeLeftMillis");
-            boolean timerRunning = (boolean) stateItems.get("timerRunning");
-            long endTimeMillis = (long) stateItems.get("endTimeMillis");
+            HashMap<MainActivityState.StateItems, Object> stateItems = (HashMap<MainActivityState.StateItems, Object>) state.getStateItems();
+            long durationSeconds = (long) stateItems.get(MainActivityState.StateItems.DURATION_SECONDS);
+            long timeLeftMillis = (long) stateItems.get(MainActivityState.StateItems.TIME_LEFT_MLLIS);
+            boolean timerRunning = (boolean) stateItems.get(MainActivityState.StateItems.TIMER_RUNNING);
+            long stopTimeMillis = (long) stateItems.get(MainActivityState.StateItems.STOP_TIME_MILLIS);
 
             timer = new Timer(durationSeconds, timeLeftMillis, timerRunning);
 
             if (timerRunning) {
-                timeLeftMillis = endTimeMillis - System.currentTimeMillis();
+                long current = System.currentTimeMillis();
+                timeLeftMillis = timeLeftMillis - (System.currentTimeMillis() - stopTimeMillis);
                 timer = new Timer(durationSeconds, timeLeftMillis, true);
                 startButtonClicked();
-            } else if (durationSeconds != timeLeftMillis) {
+            } else if (durationSeconds*1000 != timeLeftMillis) {
                 pauseButtonClicked();
             } else {
                 stopButtonClicked();
@@ -66,11 +69,11 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
     @NonNull
     @Override
     public MainActivityContract.IState getState() {
-        HashMap<String, Object> stateItems = new HashMap<>();
-        stateItems.put("timeLeftMillis", timer.timeLeftMillis);
-        stateItems.put("durationSeconds", timer.durationSeconds);
-        stateItems.put("timerRunning", timer.timerRunning);
-        stateItems.put("stopTimeMillis", System.currentTimeMillis());
+        HashMap<MainActivityState.StateItems, Object> stateItems = new HashMap<>();
+        stateItems.put(MainActivityState.StateItems.TIME_LEFT_MLLIS, timer.timeLeftMillis);
+        stateItems.put(MainActivityState.StateItems.DURATION_SECONDS, timer.durationSeconds);
+        stateItems.put(MainActivityState.StateItems.TIMER_RUNNING, timer.timerRunning);
+        stateItems.put(MainActivityState.StateItems.STOP_TIME_MILLIS, System.currentTimeMillis());
 
         return new MainActivityState(stateItems);
     }

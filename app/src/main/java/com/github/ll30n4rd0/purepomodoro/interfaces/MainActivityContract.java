@@ -34,7 +34,7 @@ public interface MainActivityContract{
     }
 
     interface IState extends BaseMVP.IBaseState{
-        HashMap<String, Object> getStateItems();
+        HashMap<?, Object> getStateItems();
     }
 
     interface IPresenter extends BaseMVP.IBaseStatefulPresenter<IView, IState>{
