@@ -45,7 +45,6 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
             timer = new Timer(durationSeconds, timeLeftMillis, timerRunning);
 
             if (timerRunning) {
-                long current = System.currentTimeMillis();
                 timeLeftMillis = timeLeftMillis - (System.currentTimeMillis() - stopTimeMillis);
                 timer = new Timer(durationSeconds, timeLeftMillis, true);
                 startButtonClicked();
@@ -91,15 +90,14 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
     }
 
     @Override
-    public void stopButtonClicked() {
-        timer.stop();
-        view.setTimerStoppedButtonInterface();
+    public void continueButtonClicked() {
+        startButtonClicked();
     }
 
     @Override
-    public void skipButtonClicked() {
-        //Todo: Add skip functionality
-        //view.setTimerSkippedButtonInterface();
+    public void stopButtonClicked() {
+        timer.stop();
+        view.setTimerStoppedButtonInterface();
     }
 
     private void timerFinished() {

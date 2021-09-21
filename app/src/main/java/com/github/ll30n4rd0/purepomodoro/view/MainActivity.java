@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     private Button startButton;
     private Button stopButton;
     private Button pauseButton;
-    private Button skipButton;
+    private Button continueButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         startButton = findViewById(R.id.start_button);
         stopButton = findViewById(R.id.stop_button);
         pauseButton = findViewById(R.id.pause_button);
-        skipButton = findViewById(R.id.skip_button);
+        continueButton = findViewById(R.id.continue_button);
 
         presenter = new MainActivityPresenter();
 
@@ -90,9 +90,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
             public void onClick(View v) { presenter.pauseButtonClicked(); }
         });
 
-        skipButton.setOnClickListener(new OnClickListener() {
+        continueButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) { presenter.skipButtonClicked(); }
+            public void onClick(View v) { presenter.continueButtonClicked(); }
         });
     }
 
@@ -126,30 +126,25 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     @Override
     public void setTimerRunningButtonInterface() {
         startButton.setVisibility(View.INVISIBLE);
+        continueButton.setVisibility(View.INVISIBLE);
         pauseButton.setVisibility(View.VISIBLE);
-        skipButton.setVisibility(View.VISIBLE);
         stopButton.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void setTimerPausedButtonInterface() {
-        startButton.setVisibility(View.VISIBLE);
+        startButton.setVisibility(View.INVISIBLE);
+        continueButton.setVisibility(View.VISIBLE);
         pauseButton.setVisibility(View.INVISIBLE);
-        skipButton.setVisibility(View.VISIBLE);
         stopButton.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void setTimerStoppedButtonInterface() {
         startButton.setVisibility(View.VISIBLE);
+        continueButton.setVisibility(View.INVISIBLE);
         pauseButton.setVisibility(View.INVISIBLE);
-        skipButton.setVisibility(View.INVISIBLE);
         stopButton.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void setTimerSkippedButtonInterface() {
-        setTimerRunningButtonInterface();
     }
 
     /*@Override public void onPostCreate(Bundle savedInstanceState) {

@@ -29,8 +29,6 @@ public interface MainActivityContract{
         void setTimerPausedButtonInterface();
 
         void setTimerStoppedButtonInterface();
-
-        void setTimerSkippedButtonInterface();
     }
 
     interface IState extends BaseMVP.IBaseState{
@@ -43,9 +41,9 @@ public interface MainActivityContract{
 
         void pauseButtonClicked();
 
-        void stopButtonClicked();
+        void continueButtonClicked();
 
-        void skipButtonClicked();
+        void stopButtonClicked();
 
         void onMainActivityStop();
     }
