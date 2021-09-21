@@ -1,2 +1,2 @@
 # pure-pomodoro
-A simple and pure pomodoro timer.
+A simple pomodoro timer.
