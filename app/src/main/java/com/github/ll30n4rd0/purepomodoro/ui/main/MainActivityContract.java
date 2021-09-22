@@ -1,6 +1,7 @@
-package com.github.ll30n4rd0.purepomodoro.interfaces;
+package com.github.ll30n4rd0.purepomodoro.ui.main;
 
-import com.github.ll30n4rd0.purepomodoro.model.Pomodoro;
+import com.github.ll30n4rd0.purepomodoro.data.db.model.Pomodoro;
+import com.github.ll30n4rd0.purepomodoro.ui.base.BaseMVP;
 
 import java.util.HashMap;
 
@@ -32,7 +33,14 @@ public interface MainActivityContract{
     }
 
     interface IState extends BaseMVP.IBaseState{
-        HashMap<?, Object> getStateItems();
+        HashMap<StateItems, Object> getStateItems();
+
+        enum StateItems{
+            TIME_LEFT_MILLIS,
+            DURATION_SECONDS,
+            TIMER_RUNNING,
+            STOP_TIME_MILLIS
+        }
     }
 
     interface IPresenter extends BaseMVP.IBaseStatefulPresenter<IView, IState>{

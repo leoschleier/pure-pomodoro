@@ -1,16 +1,11 @@
-package com.github.ll30n4rd0.purepomodoro.presenter;
+package com.github.ll30n4rd0.purepomodoro.ui.main;
 
-import android.annotation.SuppressLint;
 import android.os.CountDownTimer;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.github.ll30n4rd0.purepomodoro.interfaces.BaseMVP;
-import com.github.ll30n4rd0.purepomodoro.interfaces.MainActivityContract;
-import com.github.ll30n4rd0.purepomodoro.model.Pomodoro;
+import com.github.ll30n4rd0.purepomodoro.data.db.model.Pomodoro;
 
 import java.util.HashMap;
-
-import static java.lang.Math.abs;
 
 public class MainActivityPresenter implements MainActivityContract.IPresenter {
 
@@ -36,9 +31,9 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
     public void subscribe(@NonNull MainActivityContract.IView view, @Nullable MainActivityContract.IState state) {
         this.view = view;
         if (state != null) {
-            HashMap<MainActivityState.StateItems, Object> stateItems = (HashMap<MainActivityState.StateItems, Object>) state.getStateItems();
+            HashMap<MainActivityContract.IState.StateItems, Object> stateItems = (HashMap<MainActivityContract.IState.StateItems, Object>) state.getStateItems();
             long durationSeconds = (long) stateItems.get(MainActivityState.StateItems.DURATION_SECONDS);
-            long timeLeftMillis = (long) stateItems.get(MainActivityState.StateItems.TIME_LEFT_MLLIS);
+            long timeLeftMillis = (long) stateItems.get(MainActivityState.StateItems.TIME_LEFT_MILLIS);
             boolean timerRunning = (boolean) stateItems.get(MainActivityState.StateItems.TIMER_RUNNING);
             long stopTimeMillis = (long) stateItems.get(MainActivityState.StateItems.STOP_TIME_MILLIS);
 
@@ -69,7 +64,7 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
     @Override
     public MainActivityContract.IState getState() {
         HashMap<MainActivityState.StateItems, Object> stateItems = new HashMap<>();
-        stateItems.put(MainActivityState.StateItems.TIME_LEFT_MLLIS, timer.timeLeftMillis);
+        stateItems.put(MainActivityState.StateItems.TIME_LEFT_MILLIS, timer.timeLeftMillis);
         stateItems.put(MainActivityState.StateItems.DURATION_SECONDS, timer.durationSeconds);
         stateItems.put(MainActivityState.StateItems.TIMER_RUNNING, timer.timerRunning);
         stateItems.put(MainActivityState.StateItems.STOP_TIME_MILLIS, System.currentTimeMillis());

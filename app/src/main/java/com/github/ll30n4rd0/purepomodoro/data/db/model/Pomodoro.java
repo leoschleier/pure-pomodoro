@@ -1,7 +1,7 @@
-package com.github.ll30n4rd0.purepomodoro.model;
+package com.github.ll30n4rd0.purepomodoro.data.db.model;
 
 
-import com.github.ll30n4rd0.purepomodoro.interfaces.MainActivityContract;
+import com.github.ll30n4rd0.purepomodoro.ui.main.MainActivityContract;
 
 public class Pomodoro implements MainActivityContract.IModel{
     private int numIntervals, currentInterval;
