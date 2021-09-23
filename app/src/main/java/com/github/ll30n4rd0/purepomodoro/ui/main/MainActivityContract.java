@@ -22,7 +22,7 @@ public interface MainActivityContract{
         Pomodoro.State nextPomodoroState();
     }
 
-    interface IMainView extends BaseMVP.IBaseView{
+    interface IMainView extends BaseMVP.IBaseView {
         void setTimerText(String timerTextFormatted);
 
         void setTimerRunningButtonInterface();
@@ -32,28 +32,19 @@ public interface MainActivityContract{
         void setTimerStoppedButtonInterface();
     }
 
-    interface IMainState extends BaseMVP.IBaseState{
-        HashMap<StateItems, Object> getStateItems();
+    interface IMainPresenter<V extends IMainView> extends BaseMVP.IBasePresenter<V> {
 
-        enum StateItems{
-            TIME_LEFT_MILLIS,
-            DURATION_SECONDS,
-            TIMER_RUNNING,
-            STOP_TIME_MILLIS
-        }
-    }
+        void onStartButtonClicked();
 
-    interface IMainPresenter extends BaseMVP.IBaseStatefulPresenter<IMainView, IMainState>{
+        void onPauseButtonClicked();
 
-        void startButtonClicked();
+        void onContinueButtonClicked();
 
-        void pauseButtonClicked();
+        void onStopButtonClicked();
 
-        void continueButtonClicked();
+        void onMainActivityResume();
 
-        void stopButtonClicked();
-
-        void onMainActivityStop();
+        void onMainActivityPause();
     }
 
 

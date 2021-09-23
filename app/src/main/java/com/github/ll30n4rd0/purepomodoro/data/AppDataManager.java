@@ -1,14 +1,15 @@
 package com.github.ll30n4rd0.purepomodoro.data;
 
 import android.content.Context;
-import com.github.ll30n4rd0.purepomodoro.data.prefs.IPreferencesHelper;
+import com.github.ll30n4rd0.purepomodoro.data.prefs.PreferencesHelper;
 
-public class AppDataManager implements IDataManager{
+
+public class AppDataManager implements DataManager {
 
     private final Context context;
-    private final IPreferencesHelper preferencesHelper;
+    private final PreferencesHelper preferencesHelper;
 
-    public AppDataManager(Context context, IPreferencesHelper preferencesHelper){
+    public AppDataManager(Context context, PreferencesHelper preferencesHelper){
         this.context = context;
         this.preferencesHelper = preferencesHelper;
     }
@@ -25,42 +26,42 @@ public class AppDataManager implements IDataManager{
     }
 
     @Override
-    public long getTimerDurationSec() {
+    public Long getTimerDurationSec() {
         return preferencesHelper.getTimerDurationSec();
     }
 
     @Override
-    public void setTimerDurationSec(long timerDurationSec) {
+    public void setTimerDurationSec(Long timerDurationSec) {
         preferencesHelper.setTimerDurationSec(timerDurationSec);
     }
 
     @Override
-    public long getRemainingTimerRuntimeMSec() {
+    public Long getRemainingTimerRuntimeMSec() {
         return preferencesHelper.getRemainingTimerRuntimeMSec();
     }
 
     @Override
-    public void setRemainingTimerRuntimeMSec(long remainingTimerRuntimeMSec) {
+    public void setRemainingTimerRuntimeMSec(Long remainingTimerRuntimeMSec) {
         preferencesHelper.setRemainingTimerRuntimeMSec(remainingTimerRuntimeMSec);
     }
 
     @Override
-    public long getTimerStopTimeMSec() {
+    public Long getTimerStopTimeMSec() {
         return preferencesHelper.getTimerStopTimeMSec();
     }
 
     @Override
-    public void setTimerStopTimeMSec(long timerStopTimeMSec) {
+    public void setTimerStopTimeMSec(Long timerStopTimeMSec) {
         preferencesHelper.setTimerStopTimeMSec(timerStopTimeMSec);
     }
 
     @Override
-    public boolean getTimerRunning() {
+    public Boolean getTimerRunning() {
         return preferencesHelper.getTimerRunning();
     }
 
     @Override
-    public void setTimerRunning(boolean timerRunning) {
+    public void setTimerRunning(Boolean timerRunning) {
         preferencesHelper.setTimerRunning(timerRunning);
     }
 }
