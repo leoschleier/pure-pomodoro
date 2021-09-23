@@ -7,35 +7,35 @@ import com.github.ll30n4rd0.purepomodoro.data.db.model.Pomodoro;
 
 import java.util.HashMap;
 
-public class MainActivityPresenter implements MainActivityContract.IPresenter {
+public class MainActivityMainPresenter implements MainActivityContract.IMainPresenter {
 
     @Nullable
-    private MainActivityContract.IModel model;
-    private MainActivityContract.IView view;
+    private MainActivityContract.IMainModel model;
+    private MainActivityContract.IMainView view;
 
     private Timer timer;
 
-    public MainActivityPresenter() {
+    public MainActivityMainPresenter() {
         this.model = new Pomodoro();
     }
-    public MainActivityPresenter(MainActivityContract.IModel model) {
+    public MainActivityMainPresenter(MainActivityContract.IMainModel model) {
         this.model = new Pomodoro();
     }
 
     @Override
-    public void subscribe(@NonNull MainActivityContract.IView view) {
+    public void subscribe(@NonNull MainActivityContract.IMainView view) {
         subscribe(view, null);
     }
 
     @Override
-    public void subscribe(@NonNull MainActivityContract.IView view, @Nullable MainActivityContract.IState state) {
+    public void subscribe(@NonNull MainActivityContract.IMainView view, @Nullable MainActivityContract.IMainState state) {
         this.view = view;
         if (state != null) {
-            HashMap<MainActivityContract.IState.StateItems, Object> stateItems = (HashMap<MainActivityContract.IState.StateItems, Object>) state.getStateItems();
-            long durationSeconds = (long) stateItems.get(MainActivityState.StateItems.DURATION_SECONDS);
-            long timeLeftMillis = (long) stateItems.get(MainActivityState.StateItems.TIME_LEFT_MILLIS);
-            boolean timerRunning = (boolean) stateItems.get(MainActivityState.StateItems.TIMER_RUNNING);
-            long stopTimeMillis = (long) stateItems.get(MainActivityState.StateItems.STOP_TIME_MILLIS);
+            HashMap<MainActivityContract.IMainState.StateItems, Object> stateItems = (HashMap<MainActivityContract.IMainState.StateItems, Object>) state.getStateItems();
+            long durationSeconds = (long) stateItems.get(MainActivityMainState.StateItems.DURATION_SECONDS);
+            long timeLeftMillis = (long) stateItems.get(MainActivityMainState.StateItems.TIME_LEFT_MILLIS);
+            boolean timerRunning = (boolean) stateItems.get(MainActivityMainState.StateItems.TIMER_RUNNING);
+            long stopTimeMillis = (long) stateItems.get(MainActivityMainState.StateItems.STOP_TIME_MILLIS);
 
             timer = new Timer(durationSeconds, timeLeftMillis, timerRunning);
 
@@ -62,14 +62,14 @@ public class MainActivityPresenter implements MainActivityContract.IPresenter {
 
     @NonNull
     @Override
-    public MainActivityContract.IState getState() {
-        HashMap<MainActivityState.StateItems, Object> stateItems = new HashMap<>();
-        stateItems.put(MainActivityState.StateItems.TIME_LEFT_MILLIS, timer.timeLeftMillis);
-        stateItems.put(MainActivityState.StateItems.DURATION_SECONDS, timer.durationSeconds);
-        stateItems.put(MainActivityState.StateItems.TIMER_RUNNING, timer.timerRunning);
-        stateItems.put(MainActivityState.StateItems.STOP_TIME_MILLIS, System.currentTimeMillis());
+    public MainActivityContract.IMainState getState() {
+        HashMap<MainActivityMainState.StateItems, Object> stateItems = new HashMap<>();
+        stateItems.put(MainActivityMainState.StateItems.TIME_LEFT_MILLIS, timer.timeLeftMillis);
+        stateItems.put(MainActivityMainState.StateItems.DURATION_SECONDS, timer.durationSeconds);
+        stateItems.put(MainActivityMainState.StateItems.TIMER_RUNNING, timer.timerRunning);
+        stateItems.put(MainActivityMainState.StateItems.STOP_TIME_MILLIS, System.currentTimeMillis());
 
-        return new MainActivityState(stateItems);
+        return new MainActivityMainState(stateItems);
     }
 
     @Override

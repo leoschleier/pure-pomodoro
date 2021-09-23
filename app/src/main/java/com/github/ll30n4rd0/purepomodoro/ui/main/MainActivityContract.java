@@ -6,7 +6,7 @@ import com.github.ll30n4rd0.purepomodoro.ui.base.BaseMVP;
 import java.util.HashMap;
 
 public interface MainActivityContract{
-    interface IModel extends BaseMVP.IBaseModel {
+    interface IMainModel extends BaseMVP.IBaseModel {
         int getNumIntervals();
 
         int getCurrentInterval();
@@ -22,7 +22,7 @@ public interface MainActivityContract{
         Pomodoro.State nextPomodoroState();
     }
 
-    interface IView extends BaseMVP.IBaseView{
+    interface IMainView extends BaseMVP.IBaseView{
         void setTimerText(String timerTextFormatted);
 
         void setTimerRunningButtonInterface();
@@ -32,7 +32,7 @@ public interface MainActivityContract{
         void setTimerStoppedButtonInterface();
     }
 
-    interface IState extends BaseMVP.IBaseState{
+    interface IMainState extends BaseMVP.IBaseState{
         HashMap<StateItems, Object> getStateItems();
 
         enum StateItems{
@@ -43,7 +43,7 @@ public interface MainActivityContract{
         }
     }
 
-    interface IPresenter extends BaseMVP.IBaseStatefulPresenter<IView, IState>{
+    interface IMainPresenter extends BaseMVP.IBaseStatefulPresenter<IMainView, IMainState>{
 
         void startButtonClicked();
 

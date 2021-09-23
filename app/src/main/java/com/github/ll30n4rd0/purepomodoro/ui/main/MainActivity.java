@@ -10,15 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.github.ll30n4rd0.purepomodoro.R;
-import com.github.ll30n4rd0.purepomodoro.ui.main.MainActivityContract.IState;
-import com.github.ll30n4rd0.purepomodoro.ui.main.MainActivityContract.IView;
-import com.github.ll30n4rd0.purepomodoro.ui.main.MainActivityContract.IPresenter;
+import com.github.ll30n4rd0.purepomodoro.ui.main.MainActivityContract.IMainState;
+import com.github.ll30n4rd0.purepomodoro.ui.main.MainActivityContract.IMainView;
+import com.github.ll30n4rd0.purepomodoro.ui.main.MainActivityContract.IMainPresenter;
 import java.util.HashMap;
 
 
-public class MainActivity extends AppCompatActivity implements IView {
+public class MainActivity extends AppCompatActivity implements IMainView {
 
-    IPresenter presenter;
+    IMainPresenter presenter;
 
     //private EditText editTextInput;
     //private Button setButton;
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements IView {
         pauseButton = findViewById(R.id.pause_button);
         continueButton = findViewById(R.id.continue_button);
 
-        presenter = new MainActivityPresenter();
+        presenter = new MainActivityMainPresenter();
 
         /*setButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements IView {
     protected void onResume() {
         super.onResume();
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        IState state = StateRepositoryHelper.restoreOnStart(prefs);
+        IMainState state = StateRepositoryHelper.restoreOnStart(prefs);
         presenter.subscribe(this, state);
     }
 
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements IView {
         super.onPause();
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        IState presenterState = presenter.getState();
+        IMainState presenterState = presenter.getState();
         StateRepositoryHelper.saveOnStop(editor, presenterState);
         presenter.unsubscribe();
     }
@@ -181,14 +181,14 @@ public class MainActivity extends AppCompatActivity implements IView {
 
     private static class StateRepositoryHelper {
         //TODO: Simplify save and restore
-        static final IState.StateItems DURATION = IState.StateItems.DURATION_SECONDS;
-        static final IState.StateItems TIME_LEFT = IState.StateItems.TIME_LEFT_MILLIS;
-        static final IState.StateItems STOP_TIME = IState.StateItems.STOP_TIME_MILLIS;
-        static final IState.StateItems TIMER_RUNNING = IState.StateItems.TIMER_RUNNING;
+        static final IMainState.StateItems DURATION = IMainState.StateItems.DURATION_SECONDS;
+        static final IMainState.StateItems TIME_LEFT = IMainState.StateItems.TIME_LEFT_MILLIS;
+        static final IMainState.StateItems STOP_TIME = IMainState.StateItems.STOP_TIME_MILLIS;
+        static final IMainState.StateItems TIMER_RUNNING = IMainState.StateItems.TIMER_RUNNING;
 
 
-        private static void saveInstanceState(@NonNull Bundle outState, IState state) {
-            HashMap<IState.StateItems, Object> stateItems = state.getStateItems();
+        private static void saveInstanceState(@NonNull Bundle outState, IMainState state) {
+            HashMap<IMainState.StateItems, Object> stateItems = state.getStateItems();
             long durationSeconds = (long) stateItems.get(DURATION);
             long timeLeftMillis = (long) stateItems.get(TIME_LEFT);
             long stopTimeMillis = (long) stateItems.get(STOP_TIME);
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements IView {
             outState.putBoolean(String.valueOf(TIMER_RUNNING), timerRunning);
         }
 
-        private static IState restoreInstanceState(@NonNull Bundle savedInstanceState) {
+        private static IMainState restoreInstanceState(@NonNull Bundle savedInstanceState) {
             long durationSeconds = savedInstanceState.getLong(String.valueOf(DURATION));
             long timeLeftMillis = savedInstanceState.getLong(String.valueOf(TIME_LEFT));
             long stopTimeMillis = savedInstanceState.getLong(String.valueOf(STOP_TIME));
@@ -209,8 +209,8 @@ public class MainActivity extends AppCompatActivity implements IView {
             return createState(durationSeconds, timeLeftMillis, stopTimeMillis, timerRunning);
         }
 
-        private static void saveOnStop(@NonNull SharedPreferences.Editor editor, IState state) {
-            HashMap<IState.StateItems, Object> stateItems = state.getStateItems();
+        private static void saveOnStop(@NonNull SharedPreferences.Editor editor, IMainState state) {
+            HashMap<IMainState.StateItems, Object> stateItems = state.getStateItems();
             long durationSeconds = (long) stateItems.get(DURATION);
             long timeLeftMillis = (long) stateItems.get(TIME_LEFT);
             long stopTimeMillis = (long) stateItems.get(STOP_TIME);
@@ -223,8 +223,8 @@ public class MainActivity extends AppCompatActivity implements IView {
             editor.apply();
         }
 
-        private static IState restoreOnStart(SharedPreferences prefs) {
-            IState mainActivityState = null;
+        private static IMainState restoreOnStart(SharedPreferences prefs) {
+            IMainState mainActivityState = null;
 
             long defDuration = 1000000;
             long durationSeconds = prefs.getLong(String.valueOf(DURATION), defDuration);
@@ -244,14 +244,14 @@ public class MainActivity extends AppCompatActivity implements IView {
             prefs.edit().clear().apply();
         }
 
-        private static IState createState(long durationSeconds, long timeLeftMillis, long stopTimeMillis, boolean timerRunning){
-            HashMap<IState.StateItems, Object> stateItems = new HashMap<>();
+        private static IMainState createState(long durationSeconds, long timeLeftMillis, long stopTimeMillis, boolean timerRunning){
+            HashMap<IMainState.StateItems, Object> stateItems = new HashMap<>();
             stateItems.put(DURATION, durationSeconds);
             stateItems.put(TIME_LEFT, timeLeftMillis);
             stateItems.put(STOP_TIME, stopTimeMillis);
             stateItems.put(TIMER_RUNNING, timerRunning);
 
-            return new MainActivityState(stateItems);
+            return new MainActivityMainState(stateItems);
         }
     }
 }

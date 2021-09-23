@@ -3,7 +3,7 @@ package com.github.ll30n4rd0.purepomodoro.data.db.model;
 
 import com.github.ll30n4rd0.purepomodoro.ui.main.MainActivityContract;
 
-public class Pomodoro implements MainActivityContract.IModel{
+public class Pomodoro implements MainActivityContract.IMainModel {
     private int numIntervals, currentInterval;
     private int workDurationSeconds, shortBreakDurationSeconds, longBreakDurationSeconds;
     private Pomodoro.State currentPomodoroState;
