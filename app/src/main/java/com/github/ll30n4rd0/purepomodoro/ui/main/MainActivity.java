@@ -1,10 +1,14 @@
 package com.github.ll30n4rd0.purepomodoro.ui.main;
 
 import android.content.Context;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import com.github.ll30n4rd0.purepomodoro.R;
 import com.github.ll30n4rd0.purepomodoro.data.AppDataManager;
 import com.github.ll30n4rd0.purepomodoro.data.DataManager;
@@ -74,6 +78,28 @@ public class MainActivity extends BaseActivity implements MainActivityContract.I
         pauseButton.setOnClickListener(v -> presenter.onPauseButtonClicked());
 
         continueButton.setOnClickListener(v -> presenter.onContinueButtonClicked());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch(item.getItemId()){
+            case R.id.settings_option:
+                presenter.onSettingsItemClicked();
+            case R.id.some_option:
+                // Do something
+            default:
+                // Do nothing
+        }
+        return true;
     }
 
     @Override

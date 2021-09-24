@@ -42,6 +42,8 @@ public interface MainActivityContract{
 
         void onStopButtonClicked();
 
+        void onSettingsItemClicked();
+
         void onMainActivityResume();
 
         void onMainActivityPause();

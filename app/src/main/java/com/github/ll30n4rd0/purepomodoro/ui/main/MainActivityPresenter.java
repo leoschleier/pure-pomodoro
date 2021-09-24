@@ -103,6 +103,11 @@ public class MainActivityPresenter<V extends MainActivityContract.IMainView> ext
     }
 
     @Override
+    public void onSettingsItemClicked() {
+
+    }
+
+    @Override
     public void onMainActivityResume(){
         //TODO: Change defaultDuration
         timer = restoreTimerState(25*60);
