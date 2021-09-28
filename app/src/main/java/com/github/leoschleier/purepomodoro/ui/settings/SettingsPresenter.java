@@ -14,8 +14,12 @@ public class SettingsPresenter<V extends SettingsActivityContract.ISettingsView>
     }
 
     @Override
+    public void onApplyButtonClicked() {
+        getView().openMainActivity();
+    }
+
+    @Override
     public void onBackPressed() {
-        SettingsActivityContract.ISettingsView view = getView();
-        view.openMainActivity();
+        getView().openMainActivity();
     }
 }

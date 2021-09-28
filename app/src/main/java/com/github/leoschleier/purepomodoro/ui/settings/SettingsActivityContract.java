@@ -16,7 +16,10 @@ public interface SettingsActivityContract {
 
     interface ISettingsPresenter<V extends ISettingsView> extends BaseMVP.IBasePresenter<V>{
 
+        void onApplyButtonClicked();
+
         void onBackPressed();
+
     }
 
 }

@@ -3,6 +3,8 @@ package com.github.leoschleier.purepomodoro.ui.settings;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 import androidx.annotation.Nullable;
 import com.github.leoschleier.purepomodoro.R;
 import com.github.leoschleier.purepomodoro.ui.base.BaseActivity;
@@ -19,6 +21,9 @@ public class SettingsActivity extends BaseActivity implements SettingsActivityCo
     //private Button setButton;
     //private Button resetButton;
 
+    private EditText numIntervalsEditText, workDurationEditText, shortBreakDurationEditText, longBreakDurationEditText;
+    private Button applyButton;
+
     public static Intent getStartIntent(Context context){
         return new Intent(context, SettingsActivity.class);
     }
@@ -30,6 +35,12 @@ public class SettingsActivity extends BaseActivity implements SettingsActivityCo
         getActivityComponent().inject(this);
 
         setContentView(R.layout.activity_settings);
+
+        numIntervalsEditText = findViewById(R.id.intervals_edit);
+        workDurationEditText = findViewById(R.id.work_duration_edit);
+        shortBreakDurationEditText = findViewById(R.id.short_break_duration_edit);
+        longBreakDurationEditText = findViewById(R.id.long_break_duration_edit);
+        applyButton = findViewById(R.id.apply_button);
 
         //editTextInput = findViewById(R.id.edit_text_input);
         //setButton = findViewById(R.id.set_button);
@@ -54,6 +65,7 @@ public class SettingsActivity extends BaseActivity implements SettingsActivityCo
             }
         });*/
 
+        applyButton.setOnClickListener(v -> presenter.onApplyButtonClicked());
     }
 
      /*private void setTime(long milliseconds) {
