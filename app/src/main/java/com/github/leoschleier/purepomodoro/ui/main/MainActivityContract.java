@@ -28,6 +28,8 @@ public interface MainActivityContract{
         void setTimerPausedButtonInterface();
 
         void setTimerStoppedButtonInterface();
+
+        void openSettingsActivity();
     }
 
     interface IMainPresenter<V extends IMainView> extends BaseMVP.IBasePresenter<V> {
@@ -41,6 +43,8 @@ public interface MainActivityContract{
         void onStopButtonClicked();
 
         void onSettingsItemClicked();
+
+        void onAboutItemClicked();
 
         void onMainActivityResume();
 

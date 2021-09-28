@@ -77,6 +77,11 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
 
     @Override
     public void onSettingsItemClicked() {
+        getView().openSettingsActivity();
+    }
+
+    @Override
+    public void onAboutItemClicked() {
 
     }
 

@@ -6,6 +6,8 @@ import com.github.leoschleier.purepomodoro.di.ActivityContext;
 import com.github.leoschleier.purepomodoro.di.PerActivity;
 import com.github.leoschleier.purepomodoro.ui.main.MainActivityContract;
 import com.github.leoschleier.purepomodoro.ui.main.MainPresenter;
+import com.github.leoschleier.purepomodoro.ui.settings.SettingsActivityContract;
+import com.github.leoschleier.purepomodoro.ui.settings.SettingsPresenter;
 import dagger.Module;
 import dagger.Provides;
 
@@ -33,6 +35,13 @@ public class ActivityModule {
     @PerActivity
     MainActivityContract.IMainPresenter<MainActivityContract.IMainView> provideMainPresenter(
             MainPresenter<MainActivityContract.IMainView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    SettingsActivityContract.ISettingsPresenter<SettingsActivityContract.ISettingsView> provideSettingsPresenter(
+            SettingsPresenter<SettingsActivityContract.ISettingsView> presenter){
         return presenter;
     }
 }

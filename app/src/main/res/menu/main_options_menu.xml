@@ -5,8 +5,8 @@
           android:icon="@drawable/ic_icon"
           android:title="Settings"
           app:showAsAction="never"/>
-    <item android:id="@+id/some_option"
+    <item android:id="@+id/about"
           android:icon="@drawable/ic_icon"
-          android:title="Some Option"
+          android:title="About"
           app:showAsAction="never"/>
 </menu>
