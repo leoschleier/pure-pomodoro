@@ -5,7 +5,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.github.ll30n4rd0.purepomodoro"
+        applicationId "com.github.leoschleier.purepomodoro"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1

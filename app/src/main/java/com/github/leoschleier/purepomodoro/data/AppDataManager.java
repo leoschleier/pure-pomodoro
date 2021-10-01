@@ -2,6 +2,7 @@ package com.github.leoschleier.purepomodoro.data;
 
 import android.content.Context;
 import com.github.leoschleier.purepomodoro.data.db.DbHelper;
+import com.github.leoschleier.purepomodoro.data.db.model.PomodoroSetup;
 import com.github.leoschleier.purepomodoro.data.prefs.PreferencesHelper;
 import com.github.leoschleier.purepomodoro.di.ApplicationContext;
 
@@ -26,11 +27,15 @@ public class AppDataManager implements DataManager {
     public void updateTimerState(long timerDurationSec,
                                  long remainingTimerRuntimeMSec,
                                  long timerStopTimeMSec,
-                                 boolean timerRunning) {
+                                 boolean timerRunning,
+                                 int pomodoroState,
+                                 int nIntervalsCompleted) {
         setTimerDurationSec(timerDurationSec);
         setRemainingTimerRuntimeMSec(remainingTimerRuntimeMSec);
         setTimerStopTimeMSec(timerStopTimeMSec);
         setTimerRunning(timerRunning);
+        setPomodoroState(pomodoroState);
+        setNIntervalsCompleted(nIntervalsCompleted);
     }
 
     @Override
@@ -71,5 +76,35 @@ public class AppDataManager implements DataManager {
     @Override
     public void setTimerRunning(Boolean timerRunning) {
         preferencesHelper.setTimerRunning(timerRunning);
+    }
+
+    @Override
+    public Integer getPomodoroState() {
+        return preferencesHelper.getPomodoroState();
+    }
+
+    @Override
+    public void setPomodoroState(Integer pomodoroState) {
+        preferencesHelper.setPomodoroState(pomodoroState);
+    }
+
+    @Override
+    public Integer getNIntervalsCompleted() {
+        return preferencesHelper.getNIntervalsCompleted();
+    }
+
+    @Override
+    public void setNIntervalsCompleted(Integer nIntervalsCompleted) {
+        preferencesHelper.setNIntervalsCompleted(nIntervalsCompleted);
+    }
+
+    @Override
+    public boolean savePomodoroSetup(PomodoroSetup pomodoroSetup) {
+        return dbHelper.savePomodoroSetup(pomodoroSetup);
+    }
+
+    @Override
+    public PomodoroSetup getPomodoroSetup(String name) {
+        return dbHelper.getPomodoroSetup(name);
     }
 }

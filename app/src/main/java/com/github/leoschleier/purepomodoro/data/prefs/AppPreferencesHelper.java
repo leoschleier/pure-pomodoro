@@ -17,6 +17,9 @@ public class AppPreferencesHelper implements PreferencesHelper {
     private static final String PREF_KEY_REMAINING_TIMER_RUNTIME_MSEC = "PREF_KEY_REMAINING_TIMER_RUNTIME_MSEC";
     private static final String PREF_KEY_TIMER_STOP_TIME_MSEC = "PREF_KEY_TIMER_STOP_TIME_MSEC";
     private static final String PREF_KEY_TIMER_RUNNING = "PREF_KEY_TIMER_RUNNING";
+    private static final String PREF_KEY_POMODORO_STATE = "PREF_KEY_POMODORO_STATE";
+    private static final String PREF_KEY_INTERVALS_COMPLETED = "PREF_KEY_INTERVALS_COMPLETED";
+
 
     private final SharedPreferences prefs;
 
@@ -71,5 +74,29 @@ public class AppPreferencesHelper implements PreferencesHelper {
     public void setTimerRunning(Boolean timerRunning) {
         boolean running = timerRunning != null && timerRunning;
         prefs.edit().putBoolean(PREF_KEY_TIMER_RUNNING, running).apply();
+    }
+
+    @Override
+    public Integer getPomodoroState() {
+        int pomodoroState = prefs.getInt(PREF_KEY_POMODORO_STATE, AppConstants.INT_NULL_INDEX);
+        return pomodoroState == AppConstants.INT_NULL_INDEX ? null : pomodoroState;
+    }
+
+    @Override
+    public void setPomodoroState(Integer pomodoroState) {
+        int state = pomodoroState == null ? AppConstants.INT_NULL_INDEX : pomodoroState;
+        prefs.edit().putInt(PREF_KEY_POMODORO_STATE, state).apply();
+    }
+
+    @Override
+    public Integer getNIntervalsCompleted() {
+        int nIntervalsCompleted = prefs.getInt(PREF_KEY_INTERVALS_COMPLETED, AppConstants.INT_NULL_INDEX);
+        return nIntervalsCompleted == AppConstants.INT_NULL_INDEX ? null : nIntervalsCompleted;
+    }
+
+    @Override
+    public void setNIntervalsCompleted(Integer nIntervalsCompleted) {
+        int intervals = nIntervalsCompleted == null ? AppConstants.INT_NULL_INDEX : nIntervalsCompleted;
+        prefs.edit().putInt(PREF_KEY_INTERVALS_COMPLETED, intervals).apply();
     }
 }

@@ -18,4 +18,12 @@ public interface PreferencesHelper {
 
     void setTimerRunning(Boolean timerRunning);
 
+    Integer getPomodoroState();
+
+    void setPomodoroState(Integer pomodoroState);
+
+    Integer getNIntervalsCompleted();
+
+    void setNIntervalsCompleted(Integer nIntervalsCompleted);
+
 }

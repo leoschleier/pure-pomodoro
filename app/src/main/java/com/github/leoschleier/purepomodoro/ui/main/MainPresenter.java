@@ -2,7 +2,9 @@ package com.github.leoschleier.purepomodoro.ui.main;
 
 import android.os.CountDownTimer;
 import com.github.leoschleier.purepomodoro.data.DataManager;
+import com.github.leoschleier.purepomodoro.data.db.model.PomodoroSetup;
 import com.github.leoschleier.purepomodoro.ui.base.BasePresenter;
+import com.github.leoschleier.purepomodoro.utils.AppConstants;
 
 import javax.inject.Inject;
 
@@ -10,46 +12,57 @@ import javax.inject.Inject;
 public class MainPresenter<V extends MainActivityContract.IMainView> extends BasePresenter<V> implements MainActivityContract.IMainPresenter<V> {
 
     private Timer timer;
+    private PomodoroSetup pomodoroSetup;
 
     @Inject
     public MainPresenter(DataManager dataManager) {
         super(dataManager);
     }
 
-    private Timer restoreTimerState(long defaultTimerDurationSec){
+    private Timer restoreTimerState(){
         DataManager dataManager = getDataManager();
 
         Long timerDurationSec = dataManager.getTimerDurationSec();
         Long remainingTimerRuntimeMSec = dataManager.getRemainingTimerRuntimeMSec();
         Long timerStopTimeMSec = dataManager.getTimerStopTimeMSec();
         Boolean timerRunning = dataManager.getTimerRunning();
-        //Todo: Load Pomodoro
-        //Todo: Place Timer initialization somewhere else
-        timer = new Timer(defaultTimerDurationSec);
+        Integer pomodoroState = dataManager.getPomodoroState();
+        Integer nIntervalsCompleted = dataManager.getNIntervalsCompleted();
+
+
 
         if (timerDurationSec != null) {
             if(timerRunning){
                 remainingTimerRuntimeMSec = remainingTimerRuntimeMSec - (System.currentTimeMillis() - timerStopTimeMSec);
-                timer = new Timer(timerDurationSec, remainingTimerRuntimeMSec, true);
+                timer = new Timer(timerDurationSec, remainingTimerRuntimeMSec, true, pomodoroState,
+                        nIntervalsCompleted);
                 onStartButtonClicked();
             }else if (timerDurationSec*1000 != remainingTimerRuntimeMSec){
+                timer = new Timer(timerDurationSec, remainingTimerRuntimeMSec, false, pomodoroState,
+                        nIntervalsCompleted);
                 onPauseButtonClicked();
             }else{
+                timer = new Timer(pomodoroSetup.getWorkDurationMin()*60);
                 onStopButtonClicked();
             }
         }
 
-        // Todo: Complete Initialization with StopTime
+        updateTimer(timer.remainingTimerRuntimeMSec);
+
         return timer;
     }
 
     private void saveTimerState(){
-        DataManager dataManager = getDataManager();
-
-        dataManager.updateTimerState(timer.timerDurationSec,
+        getDataManager().updateTimerState(timer.timerDurationSec,
                 timer.remainingTimerRuntimeMSec,
                 System.currentTimeMillis(),
-                timer.timerRunning);
+                timer.timerRunning,
+                timer.pomodoroState,
+                timer.nIntervalsCompleted);
+    }
+
+    private void loadPomodoroSetup(String name){
+        pomodoroSetup = getDataManager().getPomodoroSetup(name);
     }
 
     @Override
@@ -72,6 +85,9 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
     @Override
     public void onStopButtonClicked() {
         timer.stop();
+        long workDurationMin = getDataManager().getPomodoroSetup(AppConstants.DEFAULT_SETUP_NAME).getWorkDurationMin();
+        timer = new Timer(workDurationMin*60);
+        updateTimer(timer.timerDurationSec*1000);
         getView().setTimerStoppedButtonInterface();
     }
 
@@ -87,8 +103,9 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
 
     @Override
     public void onMainActivityResume(){
-        //TODO: Change defaultDuration
-        timer = restoreTimerState(25*60);
+        //TODO: Try load custom setup
+        loadPomodoroSetup(AppConstants.DEFAULT_SETUP_NAME);
+        timer = restoreTimerState();
     }
 
     @Override
@@ -97,8 +114,32 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
         timer.cancelCountDownTimer();
     }
 
-    private void timerFinished() {
-        getView().setTimerStoppedButtonInterface();
+    private void onTimerFinished() {
+        //getView().setTimerStoppedButtonInterface();
+        // Todo timer finished button interface
+        PomodoroSetup pomodoroSetup = getDataManager().getPomodoroSetup(AppConstants.DEFAULT_SETUP_NAME);
+        int intervalsSetup = pomodoroSetup.getnIntervals();
+        int nIntervalsCompleted = timer.nIntervalsCompleted + 1;
+
+        int nextState;
+        long duration;
+
+        if(timer.pomodoroState == Timer.POMODORO_STATE_WORK){
+            if(nIntervalsCompleted < intervalsSetup){
+                nextState = Timer.POMODORO_STATE_SHORT_BREAK;
+                duration = pomodoroSetup.getShortBreakDurationMin()*60;
+            }else {
+                nextState = Timer.POMODORO_STATE_LONG_BREAK;
+                duration = pomodoroSetup.getLongBreakDurationMin()*60;
+            }
+        } else{
+            nextState = Timer.POMODORO_STATE_WORK;
+            duration = pomodoroSetup.getWorkDurationMin();
+            nIntervalsCompleted = 0;
+        }
+
+        timer = new Timer(duration, nextState, nIntervalsCompleted);
+        timer.start();
     }
 
     private void updateTimer(long timeMillis) {
@@ -125,22 +166,42 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
 
     private class Timer {
 
+        private static final int POMODORO_STATE_WORK = 0;
+        private static final int POMODORO_STATE_SHORT_BREAK = 1;
+        private static final int POMODORO_STATE_LONG_BREAK = 2;
+
         private long remainingTimerRuntimeMSec;
         private final long timerDurationSec;
         private boolean timerRunning;
+        private int pomodoroState;
+        private int nIntervalsCompleted;
         private CountDownTimer countDownTimer;
 
         private Timer(long timerDurationSec) {
             this.timerDurationSec = timerDurationSec;
             remainingTimerRuntimeMSec = timerDurationSec * 1000;
             timerRunning = false;
+            pomodoroState = POMODORO_STATE_WORK;
+            nIntervalsCompleted = 0;
             initCountDownTimer();
         }
 
-        private Timer(long timerDurationSec, long remainingTimerRuntimeMSec, boolean timerRunning) {
+        private Timer(long timerDurationSec, int pomodoroState, int nIntervalsCompleted) {
+            this.timerDurationSec = timerDurationSec;
+            remainingTimerRuntimeMSec = timerDurationSec * 1000;
+            timerRunning = false;
+            this.pomodoroState = pomodoroState;
+            this.nIntervalsCompleted = nIntervalsCompleted;
+            initCountDownTimer();
+        }
+
+        private Timer(long timerDurationSec, long remainingTimerRuntimeMSec, boolean timerRunning, int pomodoroState,
+                      int nIntervalsCompleted) {
             this.timerDurationSec = timerDurationSec;
             this.remainingTimerRuntimeMSec = remainingTimerRuntimeMSec;
             this.timerRunning = timerRunning;
+            this.pomodoroState = pomodoroState;
+            this.nIntervalsCompleted = nIntervalsCompleted;
             initCountDownTimer();
         }
 
@@ -155,7 +216,7 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
                 @Override
                 public void onFinish() {
                     timerRunning = false;
-                    timerFinished();
+                    onTimerFinished();
                     resetTimer();
                 }
             };
@@ -184,7 +245,7 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
             }
         }
 
-        public void resetTimer() {
+        private void resetTimer() {
             setTimer(timerDurationSec);
         }
 
