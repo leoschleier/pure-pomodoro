@@ -21,6 +21,7 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
 
     private Timer restoreTimerState(){
         DataManager dataManager = getDataManager();
+        loadPomodoroSetup();
 
         Long timerDurationSec = dataManager.getTimerDurationSec();
         Long remainingTimerRuntimeMSec = dataManager.getRemainingTimerRuntimeMSec();
@@ -29,7 +30,7 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
         Integer pomodoroState = dataManager.getPomodoroState();
         Integer nIntervalsCompleted = dataManager.getNIntervalsCompleted();
 
-
+        timer = new Timer(pomodoroSetup.getWorkDurationMin()*60);
 
         if (timerDurationSec != null) {
             if(timerRunning){
@@ -42,7 +43,6 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
                         nIntervalsCompleted);
                 onPauseButtonClicked();
             }else{
-                timer = new Timer(pomodoroSetup.getWorkDurationMin()*60);
                 onStopButtonClicked();
             }
         }
@@ -61,8 +61,8 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
                 timer.nIntervalsCompleted);
     }
 
-    private void loadPomodoroSetup(String name){
-        pomodoroSetup = getDataManager().getPomodoroSetup(name);
+    private void loadPomodoroSetup(){
+        pomodoroSetup = getDataManager().getCustomOrDefaultSetup();
     }
 
     @Override
@@ -85,8 +85,8 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
     @Override
     public void onStopButtonClicked() {
         timer.stop();
-        long workDurationMin = getDataManager().getPomodoroSetup(AppConstants.DEFAULT_SETUP_NAME).getWorkDurationMin();
-        timer = new Timer(workDurationMin*60);
+        loadPomodoroSetup();
+        timer = new Timer(pomodoroSetup.getWorkDurationMin()*60);
         updateTimer(timer.timerDurationSec*1000);
         getView().setTimerStoppedButtonInterface();
     }
@@ -104,7 +104,7 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
     @Override
     public void onMainActivityResume(){
         //TODO: Try load custom setup
-        loadPomodoroSetup(AppConstants.DEFAULT_SETUP_NAME);
+        loadPomodoroSetup();
         timer = restoreTimerState();
     }
 
@@ -117,7 +117,7 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
     private void onTimerFinished() {
         //getView().setTimerStoppedButtonInterface();
         // Todo timer finished button interface
-        PomodoroSetup pomodoroSetup = getDataManager().getPomodoroSetup(AppConstants.DEFAULT_SETUP_NAME);
+        PomodoroSetup pomodoroSetup = getDataManager().getCustomOrDefaultSetup();
         int intervalsSetup = pomodoroSetup.getnIntervals();
         int nIntervalsCompleted = timer.nIntervalsCompleted + 1;
 

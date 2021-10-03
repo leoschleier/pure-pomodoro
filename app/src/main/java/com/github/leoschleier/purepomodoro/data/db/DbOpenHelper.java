@@ -26,7 +26,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTableStatement = String.format(
-                "CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s INT, %s INT, %s INT, %s INT)",
+                "CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s INT, %s LONG, %s LONG, %s LONG)",
                 DbConstants.TABLE_POMODORO_SETUP, DbConstants.COL_ID, DbConstants.COL_NAME, DbConstants.COL_N_INTERVALS,
                 DbConstants.COL_WORK_DURATION, DbConstants.COL_SHORT_BREAK_DURATION, DbConstants.COL_LONG_BREAK_DURATION);
 

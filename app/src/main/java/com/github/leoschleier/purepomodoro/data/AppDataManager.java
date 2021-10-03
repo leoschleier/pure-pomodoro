@@ -104,7 +104,12 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public PomodoroSetup getPomodoroSetup(String name) {
-        return dbHelper.getPomodoroSetup(name);
+    public PomodoroSetup getPomodoroSetup(int id) {
+        return dbHelper.getPomodoroSetup(id);
+    }
+
+    @Override
+    public PomodoroSetup getCustomOrDefaultSetup() {
+        return dbHelper.getCustomOrDefaultSetup();
     }
 }

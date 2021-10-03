@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import com.github.leoschleier.purepomodoro.R;
 import com.github.leoschleier.purepomodoro.ui.base.BaseActivity;
 import com.github.leoschleier.purepomodoro.ui.main.MainActivity;
+import com.github.leoschleier.purepomodoro.utils.AppConstants;
 
 import javax.inject.Inject;
 
@@ -16,10 +18,6 @@ public class SettingsActivity extends BaseActivity implements SettingsActivityCo
 
     @Inject
     SettingsActivityContract.ISettingsPresenter<SettingsActivityContract.ISettingsView> presenter;
-
-    //private EditText editTextInput;
-    //private Button setButton;
-    //private Button resetButton;
 
     private EditText numIntervalsEditText, workDurationEditText, shortBreakDurationEditText, longBreakDurationEditText;
     private Button applyButton;
@@ -42,29 +40,6 @@ public class SettingsActivity extends BaseActivity implements SettingsActivityCo
         longBreakDurationEditText = findViewById(R.id.long_break_duration_edit);
         applyButton = findViewById(R.id.apply_button);
 
-        //editTextInput = findViewById(R.id.edit_text_input);
-        //setButton = findViewById(R.id.set_button);
-        //resetButton = findViewById(R.id.reset_button);
-
-        /*setButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String input = editTextInput.getText().toString();
-                if (input.length() == 0) {
-                    Toast.makeText(MainActivity.this, "Field can't be empty", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                long millisInput = Long.parseLong(input) * 60000;
-                if (millisInput == 0) {
-                    Toast.makeText(MainActivity.this, "Please enter a positive number", Toast.LENGTH_SHORT).show();
-                }
-
-                setTime(millisInput);
-                editTextInput.setText("");
-            }
-        });*/
-
         applyButton.setOnClickListener(v -> presenter.onApplyButtonClicked());
     }
 
@@ -86,6 +61,7 @@ public class SettingsActivity extends BaseActivity implements SettingsActivityCo
     protected void onResume() {
         super.onResume();
         presenter.subscribe(this);
+        presenter.onResume();
     }
 
     @Override
@@ -104,5 +80,67 @@ public class SettingsActivity extends BaseActivity implements SettingsActivityCo
     public void openMainActivity() {
         startActivity(MainActivity.getStartIntent(SettingsActivity.this));
         finish();
+    }
+
+    @Override
+    public void setPomodoroSetupText(int nIntervals, long workDuration, long shortBreakDuration, long longBreakDuration) {
+        numIntervalsEditText.setText(String.valueOf(nIntervals));
+        workDurationEditText.setText(String.valueOf(workDuration));
+        shortBreakDurationEditText.setText(String.valueOf(shortBreakDuration));
+        longBreakDurationEditText.setText(String.valueOf(longBreakDuration));
+    }
+
+    @Override
+    public int getPomodoroIntervals() {
+        String input = getEditTextInput(numIntervalsEditText);
+
+        return Integer.parseInt(input);
+    }
+
+    @Override
+    public long getPomodoroWorkDuration() {
+        String input = getEditTextInput(workDurationEditText);
+
+        long duration = Long.parseLong(input);
+
+        return durationValid(duration) ? duration : AppConstants.LONG_NULL_INDEX;
+    }
+
+    @Override
+    public long getPomodoroShortBreakDuration() {
+        String input = getEditTextInput(shortBreakDurationEditText);
+
+        long duration = Long.parseLong(input);
+
+        return durationValid(duration) ? duration : AppConstants.LONG_NULL_INDEX;
+    }
+
+    @Override
+    public long getPomodoroLongBreakDuration() {
+        String input = getEditTextInput(longBreakDurationEditText);
+
+        long duration = Long.parseLong(input);
+
+        return durationValid(duration) ? duration : AppConstants.LONG_NULL_INDEX;
+    }
+
+    private boolean durationValid(long duration){
+        boolean validFlag = true;
+
+        if (duration == 0) {
+            Toast.makeText(SettingsActivity.this, "Please enter a positive number", Toast.LENGTH_SHORT).show();
+            validFlag = false;
+        }
+        return validFlag;
+    }
+
+    private String getEditTextInput(EditText editText){
+        String input = editText.getText().toString();
+
+        if(input.length() == 0){
+            Toast.makeText(SettingsActivity.this, "Field can't be empty", Toast.LENGTH_SHORT).show();
+        }
+
+        return input;
     }
 }

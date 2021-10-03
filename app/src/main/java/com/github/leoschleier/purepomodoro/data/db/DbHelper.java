@@ -6,5 +6,7 @@ public interface DbHelper {
 
     public boolean savePomodoroSetup(PomodoroSetup pomodoroSetup);
 
-    public PomodoroSetup getPomodoroSetup(String setupName);
+    public PomodoroSetup getPomodoroSetup(int setupID);
+
+    public PomodoroSetup getCustomOrDefaultSetup();
 }

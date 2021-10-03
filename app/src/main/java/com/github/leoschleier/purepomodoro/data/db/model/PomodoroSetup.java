@@ -1,5 +1,8 @@
 package com.github.leoschleier.purepomodoro.data.db.model;
 
+import androidx.annotation.Nullable;
+import com.github.leoschleier.purepomodoro.utils.AppConstants;
+
 public class PomodoroSetup {
 
     private Integer id;
@@ -8,15 +11,15 @@ public class PomodoroSetup {
 
     private Integer nIntervals;
 
-    private Integer workDurationMin;
+    private Long workDurationMin;
 
-    private Integer shortBreakDurationMin;
+    private Long shortBreakDurationMin;
 
-    private Integer longBreakDurationMin;
+    private Long longBreakDurationMin;
 
-    public PomodoroSetup(Integer id, String name, Integer nIntervals, Integer workDurationMin,
-                         Integer shortBreakDurationMin, Integer longBreakDurationMin) {
-        this.id = id;
+    public PomodoroSetup(@Nullable Integer id, String name, Integer nIntervals, Long workDurationMin,
+                         Long shortBreakDurationMin, Long longBreakDurationMin) {
+        this.id = id == null ? AppConstants.CUSTOM_SETUP_ID : AppConstants.DEFAULT_SETUP_ID;
         this.name = name;
         this.nIntervals = nIntervals;
         this.workDurationMin = workDurationMin;
@@ -48,27 +51,27 @@ public class PomodoroSetup {
         this.nIntervals = nIntervals;
     }
 
-    public Integer getWorkDurationMin() {
+    public Long getWorkDurationMin() {
         return workDurationMin;
     }
 
-    public void setWorkDurationMin(Integer workDurationMin) {
+    public void setWorkDurationMin(Long workDurationMin) {
         this.workDurationMin = workDurationMin;
     }
 
-    public Integer getShortBreakDurationMin() {
+    public Long getShortBreakDurationMin() {
         return shortBreakDurationMin;
     }
 
-    public void setShortBreakDurationMin(Integer shortBreakDurationMin) {
+    public void setShortBreakDurationMin(Long shortBreakDurationMin) {
         this.shortBreakDurationMin = shortBreakDurationMin;
     }
 
-    public Integer getLongBreakDurationMin() {
+    public Long getLongBreakDurationMin() {
         return longBreakDurationMin;
     }
 
-    public void setLongBreakDurationMin(Integer longBreakDurationMin) {
+    public void setLongBreakDurationMin(Long longBreakDurationMin) {
         this.longBreakDurationMin = longBreakDurationMin;
     }
 }
