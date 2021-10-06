@@ -1,3 +1,18 @@
 <resources>
+    <!--MainActivity-->
+    <string name = "default_timer_text">00:00</string>
     <string name="app_name">Pure Pomodoro</string>
+    <string name="start_button">Start</string>
+    <string name="pause_button">Pause</string>
+    <string name="continue_button">Continue</string>
+    <string name="stop_button">Stop</string>
+    <!--SettingsActivity-->
+    <string name="pomodoro_settings_heading">Pomodoro settings</string>
+    <string name="interval_settings">Intervals</string>
+    <string name="interval_details">Number of work intervals</string>
+    <string name="work_settings">Work</string>
+    <string name="short_break_settings">Short break</string>
+    <string name="long_break_settings">Long break</string>
+    <string name="duration_details">Duration in minutes</string>
+    <string name="apply_button">Apply</string>
 </resources>

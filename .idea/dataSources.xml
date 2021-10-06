@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="pomodoro" uuid="7ac35fe9-c9d6-41ba-a29a-b50bb09c66ee">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Leo\Documents\AndroidStudio\DeviceExplorer\emulator-5554\data\data\com.github.ll30n4rd0.purepomodoro\databases\pomodoro.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="pomodoro [2]" uuid="de2f758a-3396-4164-a48f-4cfd26804212">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Leo\Documents\AndroidStudio\DeviceExplorer\Pixel_4_API_30 [emulator-5554]\data\data\com.github.leoschleier.purepomodoro\databases\pomodoro.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>
