@@ -1,11 +1,50 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name = "colorPrimary">@color/colorRed</item>
+        <item name = "colorPrimaryVariant">@color/colorRedDark</item>
+        <item name = "colorPrimaryDark">@color/colorRedDark</item>
+        <item name = "colorSecondary">@color/colorGreen</item>
+        <item name = "colorSecondaryVariant">@color/colorGreenDark</item>
+
+        <item name = "colorOnPrimary">@color/colorWhite</item>
+        <item name = "colorOnSecondary">@color/colorBlack</item>
     </style>
-    <style name="WindowTitleBackground">
-        <item name="android:background">@color/colorPrimary</item>
+
+
+        <!-- Buttons -->
+    <style name="roundButton">
+        <item name="cornerRadius">75dp</item>
+        <item name="android:width">120dp</item>
+        <item name="android:height">60dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="primaryButton" parent="roundButton">
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+    <style name="secondaryButton" parent="roundButton">
+        <item name="backgroundTint">?attr/colorSecondary</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+    <style name="greyButton" parent="roundButton">
+        <item name="backgroundTint">@color/colorGrey</item>
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <!-- Text -->
+    <style name="primaryText">
+        <item name="android:textColor">@color/colorBlack87</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="secondaryText">
+    <item name="android:textColor">@color/colorBlack87</item>
+    </style>
+    <style name="settingsSubHeadingText">
+        <item name="android:textColor">?attr/colorPrimaryDark</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

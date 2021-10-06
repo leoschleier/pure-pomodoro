@@ -19,6 +19,55 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
         super(dataManager);
     }
 
+
+    @Override
+    public void onStartButtonClicked() {
+        timer.start();
+        getView().setTimerRunningButtonInterface();
+    }
+
+    @Override
+    public void onPauseButtonClicked() {
+        timer.pause();
+        getView().setTimerPausedButtonInterface();
+    }
+
+    @Override
+    public void onContinueButtonClicked() {
+        onStartButtonClicked();
+    }
+
+    @Override
+    public void onStopButtonClicked() {
+        timer.stop();
+        loadPomodoroSetup();
+        timer = new Timer(pomodoroSetup.getWorkDurationMin()*60);
+        updateTimer(timer.timerDurationSec*1000);
+        getView().setTimerStoppedButtonInterface();
+    }
+
+    @Override
+    public void onSettingsItemClicked() {
+        getView().openSettingsActivity();
+    }
+
+    @Override
+    public void onAboutItemClicked() {
+
+    }
+
+    @Override
+    public void onMainActivityResume(){
+        loadPomodoroSetup();
+        timer = restoreTimerState();
+    }
+
+    @Override
+    public void onMainActivityPause(){
+        saveTimerState();
+        timer.cancelCountDownTimer();
+    }
+
     private Timer restoreTimerState(){
         DataManager dataManager = getDataManager();
         loadPomodoroSetup();
@@ -65,54 +114,6 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
         pomodoroSetup = getDataManager().getCustomOrDefaultSetup();
     }
 
-    @Override
-    public void onStartButtonClicked() {
-        timer.start();
-        getView().setTimerRunningButtonInterface();
-    }
-
-    @Override
-    public void onPauseButtonClicked() {
-        timer.pause();
-        getView().setTimerPausedButtonInterface();
-    }
-
-    @Override
-    public void onContinueButtonClicked() {
-        onStartButtonClicked();
-    }
-
-    @Override
-    public void onStopButtonClicked() {
-        timer.stop();
-        loadPomodoroSetup();
-        timer = new Timer(pomodoroSetup.getWorkDurationMin()*60);
-        updateTimer(timer.timerDurationSec*1000);
-        getView().setTimerStoppedButtonInterface();
-    }
-
-    @Override
-    public void onSettingsItemClicked() {
-        getView().openSettingsActivity();
-    }
-
-    @Override
-    public void onAboutItemClicked() {
-
-    }
-
-    @Override
-    public void onMainActivityResume(){
-        //TODO: Try load custom setup
-        loadPomodoroSetup();
-        timer = restoreTimerState();
-    }
-
-    @Override
-    public void onMainActivityPause(){
-        saveTimerState();
-        timer.cancelCountDownTimer();
-    }
 
     private void onTimerFinished() {
         //getView().setTimerStoppedButtonInterface();
@@ -173,8 +174,8 @@ public class MainPresenter<V extends MainActivityContract.IMainView> extends Bas
         private long remainingTimerRuntimeMSec;
         private final long timerDurationSec;
         private boolean timerRunning;
-        private int pomodoroState;
-        private int nIntervalsCompleted;
+        private final int pomodoroState;
+        private final int nIntervalsCompleted;
         private CountDownTimer countDownTimer;
 
         private Timer(long timerDurationSec) {

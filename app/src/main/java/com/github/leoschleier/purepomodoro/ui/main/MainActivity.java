@@ -27,9 +27,7 @@ public class MainActivity extends BaseActivity implements MainActivityContract.I
     private Button pauseButton;
     private Button continueButton;
 
-    public static Intent getStartIntent(Context context){
-        return new Intent(context, MainActivity.class);
-    }
+    public static Intent getStartIntent(Context context){ return new Intent(context, MainActivity.class); }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
