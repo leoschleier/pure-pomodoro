@@ -18,9 +18,7 @@
             app:layout_constraintHorizontal_bias="0.501"/>
 
     <EditText
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:inputType="number"
+            style="@style/pomodoroEditText"
             android:ems="10"
             android:id="@+id/work_duration_edit"
             app:layout_constraintEnd_toEndOf="parent"
@@ -28,13 +26,12 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintStart_toStartOf="@+id/intervals_edit"
             app:layout_constraintTop_toTopOf="@+id/workTextView"
-            app:layout_constraintBottom_toBottomOf="@+id/workTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/work_details"
             app:layout_constraintVertical_bias="0.5"/>
 
     <EditText
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:inputType="number"
+            style="@style/pomodoroEditText"
+
             android:ems="10"
             android:id="@+id/short_break_duration_edit"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,37 +39,30 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintStart_toStartOf="@+id/work_duration_edit"
             app:layout_constraintTop_toTopOf="@+id/shortBreakTextView"
-            app:layout_constraintBottom_toBottomOf="@+id/shortBreakTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/short_break_details"
             app:layout_constraintVertical_bias="0.5"/>
 
     <EditText
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:inputType="number"
+            style="@style/pomodoroEditText"
             android:ems="10"
             android:id="@+id/long_break_duration_edit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/short_break_duration_edit"
             app:layout_constraintTop_toTopOf="@+id/longBreakTextView"
-            app:layout_constraintBottom_toBottomOf="@+id/longBreakTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/long_break_details"
             app:layout_constraintVertical_bias="0.5"
             android:layout_marginEnd="16dp"/>
 
     <EditText
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:inputType="number"
+            style="@style/pomodoroEditText"
             android:ems="10"
             android:id="@+id/intervals_edit"
             app:layout_constraintTop_toTopOf="@+id/intervalsTextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.344"
-            app:layout_constraintStart_toEndOf="@+id/intervalsTextView"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/intervalsTextView"
-            app:layout_constraintVertical_bias="0.38"/>
+            android:layout_marginEnd="32dp"
+            app:layout_constraintBottom_toBottomOf="@+id/interval_details"
+            />
 
     <TextView
             style="@style/primaryText"
@@ -83,7 +73,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="16dp"
             app:layout_constraintTop_toBottomOf="@+id/pomodoro_setup_heading"
-            android:layout_marginTop="32dp"/>
+            android:layout_marginTop="16dp"/>
 
     <TextView
             style="@style/primaryText"
@@ -145,5 +135,46 @@
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+            style="@style/secondaryText"
+            android:text="@string/interval_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/interval_details"
+            app:layout_constraintTop_toBottomOf="@+id/intervalsTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
+
+    <TextView
+            style="@style/secondaryText"
+            android:text="@string/duration_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/work_details"
+            app:layout_constraintTop_toBottomOf="@+id/workTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"
+            />
+
+    <TextView
+            style="@style/secondaryText"
+            android:text="@string/duration_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/short_break_details"
+            app:layout_constraintTop_toBottomOf="@+id/shortBreakTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
+
+    <TextView
+            style="@style/secondaryText"
+            android:text="@string/duration_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/long_break_details"
+            app:layout_constraintTop_toBottomOf="@+id/longBreakTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
